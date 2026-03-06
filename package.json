@@ -1,0 +1,15 @@
+{
+  "name": "brawlhelper",
+  "version": "1.0.0",
+  "description": "BrawlHelper - Your guide to getting better at Brawl Stars",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "localtunnel": "^2.0.2"
+  }
+}

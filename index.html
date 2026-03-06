@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrawlHelper - Get Better at Brawl Stars</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- INTRO ANIMATION -->
+    <div id="intro-overlay" class="intro-overlay">
+        <div class="pyro-bg" id="pyro-bg"></div>
+        <div class="intro-bomb" id="intro-bomb">
+            <div class="bomb-ring ring-1"></div>
+            <div class="bomb-ring ring-2"></div>
+            <div class="bomb-ring ring-3"></div>
+            <div class="bomb-flash"></div>
+        </div>
+        <div class="bomb-particles" id="bomb-particles"></div>
+        <div class="intro-text" id="intro-text">
+            <span class="intro-title-brawl">BRAWL</span>
+            <span class="intro-title-helper">HELPER</span>
+        </div>
+        <img id="intro-rt" class="intro-rt" src="https://cdn.brawlify.com/brawlers/emoji/16000066.png" alt="R-T">
+
+        <!-- Larry & Lawrie + Ticket -->
+        <div class="intro-ticket-scene" id="intro-ticket-scene">
+            <div class="intro-duo">
+                <img class="intro-head intro-head-left" src="https://cdn.brawlify.com/brawlers/emoji/16000077.png" alt="Larry">
+                <div class="intro-ticket" id="intro-ticket">
+                    <div class="ticket-inner">
+                        <div class="ticket-stub"></div>
+                        <div class="ticket-body">
+                            <span class="ticket-label">ADMIT ONE</span>
+                            <span class="ticket-dest">BRAWLHELPER</span>
+                            <span class="ticket-star">&#9733;</span>
+                        </div>
+                    </div>
+                </div>
+                <img class="intro-head intro-head-right" src="https://cdn.brawlify.com/brawlers/emoji/16000077.png" alt="Lawrie">
+            </div>
+        </div>
+
+        <!-- Happy brawler celebration scene -->
+        <div class="intro-happy-scene" id="intro-happy-scene">
+            <div class="happy-stars" id="happy-stars"></div>
+            <img class="happy-brawler" src="https://cdn.brawlify.com/brawlers/borderless/16000005.png" alt="Spike">
+            <div class="happy-text">THANKS TO BRAWLHELPER!</div>
+        </div>
+
+        <!-- Zoom flash when you fly in -->
+        <div class="intro-zoom-flash" id="intro-zoom-flash"></div>
+    </div>
+
+    <div id="bg-brawler-hero" class="bg-brawler-hero" aria-hidden="true">
+        <div id="bg-hero-scene" class="bg-hero-scene"></div>
+        <div id="bg-scene-objects" class="bg-scene-objects"></div>
+        <img id="bg-hero-img" src="" alt="">
+        <div class="bg-hero-overlay"></div>
+    </div>
+
+    <header>
+        <div class="header-inner">
+            <h1 class="logo" onclick="navigateTo('home')" ondblclick="openAdminLogin()">BRAWL<span>HELPER</span></h1>
+            <nav>
+                <button class="nav-btn active" data-page="home">Home</button>
+                <button class="nav-btn" data-page="brawlers">Brawlers</button>
+                <button class="nav-btn" data-page="gamemodes">Game Modes</button>
+                <button class="nav-btn" data-page="guide">Brawl Guide</button>
+                <button class="nav-btn" data-page="quiz">Brawl Stars Quiz</button>
+                <button class="nav-btn" data-page="voices">Voices</button>
+                <button class="nav-btn" data-page="leaderboard">Leaderboard</button>
+                <button class="nav-btn" data-page="clubs">Find Club</button>
+                <button class="nav-btn" data-page="tierlist">Tier List</button>
+                <button class="nav-btn" data-page="stats">Stats</button>
+                <button class="nav-btn" data-page="creator">Creator</button>
+                <button class="nav-btn" data-page="mybrawlers">My Brawlers <span id="library-count-nav"></span></button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="app">
+        <!-- Home Page -->
+        <section id="page-home" class="page active">
+            <div class="hero">
+                <h2>Welcome to <span class="highlight">BrawlHelper</span></h2>
+                <p>Your guide to getting better at Brawl Stars. Find tips, guides, and stats for all brawlers and game modes.</p>
+                <button class="btn-primary idea-home-btn" onclick="openIdeaModal()">Give me an Idea!</button>
+            </div>
+
+            <!-- Event Banner -->
+            <div id="live-event-banner" class="live-event-banner">
+                <div class="live-event-header">
+                    <span id="live-dot" class="live-dot hidden"></span>
+                    <span id="live-label" class="live-label">No Active Event</span>
+                    <span id="live-event-title" class="live-event-title"></span>
+                </div>
+                <div id="live-event-message-single" class="live-event-msg hidden"></div>
+            </div>
+        </section>
+
+        <!-- Brawlers Page -->
+        <section id="page-brawlers" class="page">
+            <div class="section-title">
+                <h3>All Brawlers</h3>
+                <input type="text" id="brawler-search" placeholder="Search brawler..." class="search-input">
+            </div>
+            <div id="category-filters" class="category-filters">
+                <button class="cat-btn active" data-cat="all">All</button>
+                <button class="cat-btn" data-cat="Tank">Tank</button>
+                <button class="cat-btn" data-cat="Damage Dealer">Damage Dealer</button>
+                <button class="cat-btn" data-cat="Assassin">Assassin</button>
+                <button class="cat-btn" data-cat="Marksman">Marksman</button>
+                <button class="cat-btn" data-cat="Artillery">Artillery</button>
+                <button class="cat-btn" data-cat="Controller">Controller</button>
+                <button class="cat-btn" data-cat="Support">Support</button>
+            </div>
+            <div id="brawler-list" class="brawler-grid">
+                <div class="loader"></div>
+            </div>
+
+            <!-- Brawler Detail Modal -->
+            <div id="brawler-detail" class="modal hidden">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeBrawlerDetail()">&times;</button>
+                    <div id="brawler-detail-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Modes Page -->
+        <section id="page-gamemodes" class="page">
+            <div class="section-title">
+                <h3>Game Modes & Maps</h3>
+            </div>
+            <div class="category-filters">
+                <button class="mode-cat-btn cat-btn active" data-cat="all">All</button>
+                <button class="mode-cat-btn cat-btn" data-cat="3v3">3 vs 3</button>
+                <button class="mode-cat-btn cat-btn" data-cat="2v2">2 vs 2</button>
+                <button class="mode-cat-btn cat-btn" data-cat="5v5">5 vs 5</button>
+                <button class="mode-cat-btn cat-btn" data-cat="1v1">1 vs 1</button>
+                <button class="mode-cat-btn cat-btn" data-cat="showdown">Showdown</button>
+                <button class="mode-cat-btn cat-btn" data-cat="special">Special</button>
+            </div>
+            <div id="gamemodes-list" class="gamemodes-container">
+                <div class="loader"></div>
+            </div>
+        </section>
+
+        <!-- Guide Page -->
+        <section id="page-guide" class="page">
+            <div class="section-title">
+                <h3>Brawl Guide</h3>
+                <p class="guide-subtitle">Pick a brawler and a game mode to get tips!</p>
+            </div>
+            <div class="guide-selectors">
+                <div class="guide-field">
+                    <label for="guide-brawler-select">Brawler</label>
+                    <select id="guide-brawler-select" class="search-input">
+                        <option value="">-- Select brawler --</option>
+                    </select>
+                </div>
+                <div class="guide-field">
+                    <label for="guide-mode-select">Game Mode</label>
+                    <select id="guide-mode-select" class="search-input">
+                        <option value="">-- Select game mode --</option>
+                        <option value="Gem Grab">Gem Grab</option>
+                        <option value="Brawl Ball">Brawl Ball</option>
+                        <option value="Showdown">Showdown</option>
+                        <option value="Heist">Heist</option>
+                        <option value="Bounty">Bounty</option>
+                        <option value="Hot Zone">Hot Zone</option>
+                        <option value="Knockout">Knockout</option>
+                        <option value="Duels">Duels</option>
+                    </select>
+                </div>
+                <button class="btn-primary guide-show-btn" onclick="showGuide()">Show guide</button>
+            </div>
+            <div id="guide-result" class="guide-result hidden"></div>
+        </section>
+
+        <!-- Quiz Page -->
+        <section id="page-quiz" class="page">
+            <div class="section-title">
+                <h3>Brawl Stars Quiz</h3>
+            </div>
+            <div class="quiz-menu" id="quiz-menu">
+                <div class="quiz-select-card" onclick="selectQuiz('guess-brawler')">
+                    <div class="quiz-icon">🎯</div>
+                    <h4>Guess the Brawler</h4>
+                    <p>See an image and guess which brawler it is!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('voiceline')">
+                    <div class="quiz-icon">🗣️</div>
+                    <h4>Who Said It?</h4>
+                    <p>Read a voiceline and guess which brawler says it!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('ability')">
+                    <div class="quiz-icon">⚡</div>
+                    <h4>Which Super?</h4>
+                    <p>Match the super with the right brawler!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('true-false')">
+                    <div class="quiz-icon">✅</div>
+                    <h4>True or False</h4>
+                    <p>Test your knowledge of Brawl Stars facts!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('gadget')">
+                    <div class="quiz-icon">🔧</div>
+                    <h4>Gadget Quiz</h4>
+                    <p>Which brawler has this Gadget?</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('starpower')">
+                    <div class="quiz-icon">⭐</div>
+                    <h4>Star Power Quiz</h4>
+                    <p>Match the Star Power to the right brawler!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('rarity')">
+                    <div class="quiz-icon">💎</div>
+                    <h4>Guess the Rarity</h4>
+                    <p>Can you guess every brawler's rarity?</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('emoji')">
+                    <div class="quiz-icon">😎</div>
+                    <h4>Emoji Quiz</h4>
+                    <p>Guess the brawler from emoji clues!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('attack')">
+                    <div class="quiz-icon">💥</div>
+                    <h4>Guess the Attack</h4>
+                    <p>Read an attack description and name the brawler!</p>
+                </div>
+                <div class="quiz-select-card" onclick="selectQuiz('trivia')">
+                    <div class="quiz-icon">🧠</div>
+                    <h4>Brawler Trivia</h4>
+                    <p>Lore, families, and fun facts!</p>
+                </div>
+                <div class="quiz-select-card mega-card" onclick="selectQuiz('mega')">
+                    <div class="quiz-icon">🔥</div>
+                    <h4>MEGA MIX</h4>
+                    <p>All question types mixed! Choose the number of options yourself!</p>
+                </div>
+            </div>
+
+            <!-- Difficulty Selection -->
+            <div id="quiz-diff-select" class="quiz-diff-select hidden">
+                <button class="btn-back" onclick="backToQuizMenu()" style="margin-bottom: 1.5rem;">← Back</button>
+                <!-- Normal difficulty select -->
+                <div id="diff-normal">
+                    <h3 class="diff-title">Choose Difficulty</h3>
+                    <div class="diff-grid">
+                        <div class="diff-card diff-easy" onclick="startQuiz('easy')">
+                            <span class="diff-emoji">🟢</span>
+                            <h4>Easy</h4>
+                            <p>Well-known brawlers, easy questions, 3 answer options</p>
+                        </div>
+                        <div class="diff-card diff-medium" onclick="startQuiz('medium')">
+                            <span class="diff-emoji">🟡</span>
+                            <h4>Medium</h4>
+                            <p>Slightly harder questions, blurred image, 4 answer options</p>
+                        </div>
+                        <div class="diff-card diff-hard" onclick="startQuiz('hard')">
+                            <span class="diff-emoji">🔴</span>
+                            <h4>Hard</h4>
+                            <p>Hard questions, more blur, 5 answer options</p>
+                        </div>
+                        <div class="diff-card diff-extreme" onclick="startQuiz('extreme')">
+                            <span class="diff-emoji">💀</span>
+                            <h4>Extreme</h4>
+                            <p>Only for real pros! Silhouettes, 6 options, tricky questions</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mega options select -->
+                <div id="diff-mega" class="hidden">
+                    <h3 class="diff-title">🔥 MEGA MIX — Choose Number of Options</h3>
+                    <div class="diff-grid">
+                        <div class="diff-card diff-easy" onclick="startMega(2)">
+                            <span class="diff-emoji">2️⃣</span>
+                            <h4>2 options</h4>
+                            <p>50/50 chance — easy mode</p>
+                        </div>
+                        <div class="diff-card diff-medium" onclick="startMega(4)">
+                            <span class="diff-emoji">4️⃣</span>
+                            <h4>4 options</h4>
+                            <p>Standard — moderate difficulty</p>
+                        </div>
+                        <div class="diff-card diff-hard" onclick="startMega(6)">
+                            <span class="diff-emoji">6️⃣</span>
+                            <h4>6 options</h4>
+                            <p>Hard — more to choose from</p>
+                        </div>
+                        <div class="diff-card diff-extreme" onclick="startMega(8)">
+                            <span class="diff-emoji">8️⃣</span>
+                            <h4>8 options</h4>
+                            <p>Impossible! Only for masters!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quiz-game" class="quiz-game hidden">
+                <div class="quiz-header">
+                    <button class="btn-back" onclick="backToQuizMenu()">← Back</button>
+                    <span id="quiz-difficulty-badge" class="quiz-diff-badge"></span>
+                    <div class="quiz-score">Score: <span id="quiz-score">0</span> / <span id="quiz-total">0</span></div>
+                </div>
+                <div id="quiz-content"></div>
+            </div>
+        </section>
+
+        <!-- Clubs Page -->
+        <section id="page-clubs" class="page">
+            <div class="section-title">
+                <h3>Find Club</h3>
+            </div>
+            <div class="club-finder">
+                <p class="club-intro">Choose what you're looking for in a club and we'll find it for you!</p>
+                <div class="club-form">
+                    <div class="club-field">
+                        <label>Minimum Trophies in Club</label>
+                        <select id="club-trophies" class="search-input">
+                            <option value="0">All</option>
+                            <option value="10000">10,000+</option>
+                            <option value="50000">50,000+</option>
+                            <option value="100000">100,000+</option>
+                            <option value="500000">500,000+</option>
+                            <option value="1000000">1,000,000+</option>
+                        </select>
+                    </div>
+                    <div class="club-field">
+                        <label>Number of Members</label>
+                        <div class="club-range">
+                            <select id="club-min-members" class="search-input">
+                                <option value="0">Min: All</option>
+                                <option value="10">Min: 10</option>
+                                <option value="20">Min: 20</option>
+                                <option value="25">Min: 25</option>
+                            </select>
+                            <select id="club-max-members" class="search-input">
+                                <option value="100">Max: All</option>
+                                <option value="29">Max: 29 (spots available)</option>
+                                <option value="25">Max: 25</option>
+                                <option value="20">Max: 20</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="club-field">
+                        <label>Club Type</label>
+                        <select id="club-type" class="search-input">
+                            <option value="">All</option>
+                            <option value="open">Open (join directly)</option>
+                            <option value="inviteOnly">Invite Only</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary club-search-btn" onclick="searchClubs()">Search Clubs</button>
+                </div>
+                <p class="hint">Requires <code>node server.js</code> running with API key.</p>
+            </div>
+            <div id="club-results" class="club-results hidden"></div>
+        </section>
+
+        <!-- Voices Page -->
+        <section id="page-voices" class="page">
+            <div class="section-title">
+                <h3>Brawler Voicelines</h3>
+                <p class="voices-subtitle">Pick a brawler to see all voicelines!</p>
+            </div>
+            <div id="voices-content">
+                <div class="loader"></div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Page -->
+        <section id="page-leaderboard" class="page">
+            <div class="section-title">
+                <h3>Leaderboard</h3>
+            </div>
+            <div class="lb-controls">
+                <div class="lb-tabs">
+                    <button class="lb-tab active" data-tab="players">Players</button>
+                    <button class="lb-tab" data-tab="clubs">Clubs</button>
+                    <button class="lb-tab" data-tab="brawlers">Per Brawler</button>
+                    <button class="lb-tab" data-tab="prestige">Prestige</button>
+                </div>
+                <div class="lb-filters">
+                    <select id="lb-country" class="search-input">
+                        <option value="global">Global</option>
+                        <option value="SE">Sweden</option>
+                        <option value="NO">Norway</option>
+                        <option value="DK">Denmark</option>
+                        <option value="FI">Finland</option>
+                        <option value="US">USA</option>
+                        <option value="DE">Germany</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="FR">France</option>
+                        <option value="ES">Spain</option>
+                        <option value="BR">Brazil</option>
+                        <option value="JP">Japan</option>
+                        <option value="KR">South Korea</option>
+                        <option value="CN">China</option>
+                        <option value="TR">Turkey</option>
+                        <option value="MX">Mexico</option>
+                        <option value="PL">Poland</option>
+                        <option value="RU">Russia</option>
+                    </select>
+                    <div id="lb-brawler-picker" class="hidden">
+                        <select id="lb-brawler-select" class="search-input">
+                            <option value="">-- Select brawler --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <p id="lb-last-update" class="lb-timestamp"></p>
+            <div id="lb-content" class="lb-content">
+                <p class="hint">Requires <code>node server.js</code> running with API key.</p>
+            </div>
+        </section>
+
+        <!-- Stats Page -->
+        <section id="page-stats" class="page">
+            <div class="section-title">
+                <h3>Player Stats</h3>
+            </div>
+            <div class="stats-search">
+                <div class="search-box">
+                    <input type="text" id="player-tag-input" placeholder="Enter player tag (e.g. #ABC123)" class="search-input large" value="#2LU8UJ98VU">
+                    <button id="search-player-btn" class="btn-primary" onclick="searchPlayer()">Search</button>
+                </div>
+                <p class="hint">You can find the player tag in-game under your profile. Requires <code>node server.js</code> running.</p>
+            </div>
+            <div id="player-stats" class="player-stats hidden"></div>
+        </section>
+
+        <!-- Creator Page -->
+        <section id="page-creator" class="page">
+            <div class="section-title">
+                <h3>Brawler Creator</h3>
+                <p class="voices-subtitle">Describe your brawler and AI will bring it to life!</p>
+            </div>
+
+            <!-- STEP 1: Describe -->
+            <div id="cr-step1" class="cr-step">
+                <div class="cr-describe-box">
+                    <label for="cr-description" class="cr-big-label">Describe your brawler</label>
+                    <p class="cr-hint">Write everything: what they look like, colors, outfit, weapon, personality, vibe. The more detail, the better the result!</p>
+                    <textarea id="cr-description" class="cr-big-textarea" placeholder="Example: A fierce robot warrior with glowing blue eyes and a cracked metal face. Has a huge cannon arm and wears a tattered red cape. Dark silver armor with gold lightning bolts. Looks like a mix between Mecha Crow and Surge but more evil..."></textarea>
+                    <button id="cr-generate-btn" class="btn-primary cr-generate-btn">GENERATE BRAWLER</button>
+                </div>
+                <div id="cr-loading" class="cr-loading hidden">
+                    <div class="loader"></div>
+                    <p>Creating your brawler...</p>
+                </div>
+            </div>
+
+            <!-- STEP 2: Details -->
+            <div id="cr-step2" class="cr-step hidden">
+                <div class="cr-step2-layout">
+                    <div class="cr-image-panel">
+                        <img id="cr-generated-img" class="cr-generated-img" alt="Your brawler">
+                        <button id="cr-regenerate-btn" class="btn-back-small">Regenerate</button>
+                    </div>
+                    <div class="creator-form">
+                        <h4 class="creator-section-title">Identity</h4>
+                        <div class="creator-field">
+                            <label for="cr-name">Name</label>
+                            <input type="text" id="cr-name" placeholder="Name your brawler..." maxlength="20" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label>Rarity</label>
+                            <div class="creator-options">
+                                <label class="cr-option rarity-common"><input type="radio" name="cr-rarity" value="Common" checked> Common</label>
+                                <label class="cr-option rarity-rare"><input type="radio" name="cr-rarity" value="Rare"> Rare</label>
+                                <label class="cr-option rarity-sr"><input type="radio" name="cr-rarity" value="Super Rare"> Super Rare</label>
+                                <label class="cr-option rarity-epic"><input type="radio" name="cr-rarity" value="Epic"> Epic</label>
+                                <label class="cr-option rarity-mythic"><input type="radio" name="cr-rarity" value="Mythic"> Mythic</label>
+                                <label class="cr-option rarity-legendary"><input type="radio" name="cr-rarity" value="Legendary"> Legendary</label>
+                            </div>
+                        </div>
+
+                        <h4 class="creator-section-title">Abilities</h4>
+                        <div class="creator-field">
+                            <label for="cr-attack-name">Attack Name</label>
+                            <input type="text" id="cr-attack-name" placeholder="e.g. Buckshot" maxlength="30" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-attack-desc">Attack Description</label>
+                            <textarea id="cr-attack-desc" placeholder="Describe the attack..." maxlength="200" class="search-input cr-textarea"></textarea>
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-super-name">Super Name</label>
+                            <input type="text" id="cr-super-name" placeholder="e.g. Shell Shock" maxlength="30" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-super-desc">Super Description</label>
+                            <textarea id="cr-super-desc" placeholder="Describe the super..." maxlength="200" class="search-input cr-textarea"></textarea>
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-gadget-name">Gadget Name</label>
+                            <input type="text" id="cr-gadget-name" placeholder="e.g. Fast Forward" maxlength="30" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-gadget-desc">Gadget Description</label>
+                            <textarea id="cr-gadget-desc" placeholder="Describe the gadget..." maxlength="200" class="search-input cr-textarea"></textarea>
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-sp-name">Star Power Name</label>
+                            <input type="text" id="cr-sp-name" placeholder="e.g. Shell Shock" maxlength="30" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-sp-desc">Star Power Description</label>
+                            <textarea id="cr-sp-desc" placeholder="Describe the star power..." maxlength="200" class="search-input cr-textarea"></textarea>
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-hyper-name">Hypercharge Name</label>
+                            <input type="text" id="cr-hyper-name" placeholder="e.g. Mega Shell" maxlength="30" class="search-input">
+                        </div>
+                        <div class="creator-field">
+                            <label for="cr-hyper-desc">Hypercharge Description</label>
+                            <textarea id="cr-hyper-desc" placeholder="Describe the hypercharge..." maxlength="200" class="search-input cr-textarea"></textarea>
+                        </div>
+
+                        <div class="creator-buttons">
+                            <button id="cr-save-btn" class="btn-primary">SAVE BRAWLER</button>
+                            <button id="cr-back-btn" class="btn-back-small">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Brawlers Page -->
+        <section id="page-mybrawlers" class="page">
+            <div class="section-title">
+                <h3>My Brawlers (<span id="library-count">0</span>)</h3>
+                <p class="voices-subtitle">Your custom brawler collection!</p>
+            </div>
+            <div id="my-brawlers-grid" class="my-brawlers-grid"></div>
+            <p id="my-brawlers-empty" class="hint" style="display:none; text-align:center; margin-top:3rem; font-size:1.2rem;">No brawlers yet! Go to Creator to make one.</p>
+        </section>
+
+
+        <!-- Admin Page (hidden by default) -->
+        <section id="page-admin" class="page">
+            <div class="section-title">
+                <h3>Admin Panel</h3>
+            </div>
+
+            <!-- Event Controls -->
+            <div class="admin-section">
+                <h4 class="admin-section-title">Event Controls</h4>
+                <div id="admin-event-status" class="admin-event-status">
+                    <span id="admin-event-indicator" class="admin-event-off">No active event</span>
+                </div>
+                <div class="admin-event-controls">
+                    <select id="admin-event-type" class="search-input" style="max-width:150px;">
+                        <option value="live">LIVE</option>
+                        <option value="update">UPDATE</option>
+                    </select>
+                    <input type="text" id="admin-event-title" placeholder="Event title..." class="search-input" style="max-width:300px;">
+                    <button class="btn-primary" onclick="adminStartEvent()">Start Event</button>
+                    <button class="btn-danger" onclick="adminStopEvent()">Stop Event</button>
+                </div>
+                <div id="admin-event-composer" class="admin-event-composer hidden">
+                    <textarea id="admin-event-msg" class="idea-textarea" placeholder="Write a message to show in the event..."></textarea>
+                    <button class="btn-primary" onclick="adminSendMessage()">Send Message</button>
+                </div>
+            </div>
+
+            <!-- All Ideas -->
+            <div class="admin-section">
+                <h4 class="admin-section-title">All Ideas (<span id="admin-idea-count">0</span>)</h4>
+                <div id="admin-ideas-list" class="admin-ideas-list"></div>
+            </div>
+        </section>
+
+        <!-- Tier List Page -->
+        <section id="page-tierlist" class="page">
+            <div class="section-title">
+                <h3>Meta Tier List</h3>
+                <p class="guide-subtitle">See which brawlers dominate each game mode! Click a brawler for details.</p>
+            </div>
+            <div class="tier-mode-filters">
+                <button class="tier-mode-btn active" data-mode="Overall">Overall</button>
+                <button class="tier-mode-btn" data-mode="Gem Grab">Gem Grab</button>
+                <button class="tier-mode-btn" data-mode="Brawl Ball">Brawl Ball</button>
+                <button class="tier-mode-btn" data-mode="Showdown">Showdown</button>
+                <button class="tier-mode-btn" data-mode="Heist">Heist</button>
+                <button class="tier-mode-btn" data-mode="Bounty">Bounty</button>
+                <button class="tier-mode-btn" data-mode="Hot Zone">Hot Zone</button>
+                <button class="tier-mode-btn" data-mode="Knockout">Knockout</button>
+                <button class="tier-mode-btn" data-mode="Duels">Duels</button>
+            </div>
+            <div id="tierlist-container" class="tierlist-container"></div>
+
+            <!-- Tier Reason Popup -->
+            <div id="tier-reason-popup" class="modal hidden">
+                <div class="modal-content tier-reason-modal" onclick="event.stopPropagation()">
+                    <button class="modal-close" onclick="closeTierReason()">&times;</button>
+                    <div id="tier-reason-content"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brawler Detail Modal (for custom brawlers) -->
+        <div id="custom-brawler-modal" class="modal hidden">
+            <div class="modal-content custom-brawler-detail">
+                <button class="modal-close" onclick="closeCustomBrawlerDetail()">&times;</button>
+                <img id="detail-brawler-img" class="detail-brawler-img" alt="">
+                <h3 id="detail-brawler-name"></h3>
+                <div id="detail-brawler-info"></div>
+                <button class="btn-danger" id="detail-delete-btn">DELETE</button>
+            </div>
+        </div>
+    </main>
+
+    <div id="features-panel" class="features-panel">
+        <h3>What can you do in BrawlHelper?</h3>
+        <ul class="features-list">
+            <li><button class="feature-link" data-page="brawlers">Brawlers</button> — See all brawlers, favorites, tips, and info</li>
+            <li><button class="feature-link" data-page="gamemodes">Game Modes</button> — Explore all game modes and maps</li>
+            <li><button class="feature-link" data-page="guide">Brawl Guide</button> — Pick a brawler + game mode and get tips</li>
+            <li><button class="feature-link" data-page="quiz">Quiz</button> — Test your Brawl Stars knowledge</li>
+            <li><button class="feature-link" data-page="voices">Voices</button> — All brawler voicelines</li>
+            <li><button class="feature-link" data-page="leaderboard">Leaderboard</button> — See top-ranked players and clubs</li>
+            <li><button class="feature-link" data-page="clubs">Find Club</button> — Search for the perfect club</li>
+            <li><button class="feature-link" data-page="stats">Stats</button> — Check your player profile and stats</li>
+            <li><button class="feature-link" data-page="creator">Creator</button> — Design your own custom brawler</li>
+            <li><button class="feature-link" data-page="tierlist">Tier List</button> — See meta rankings for every game mode</li>
+            <li><button class="feature-link" data-page="mybrawlers">My Brawlers</button> — View your custom brawler collection</li>
+        </ul>
+    </div>
+
+    <!-- Old fixed idea button removed, now in hero -->
+
+    <!-- Idea Modal -->
+    <div id="idea-modal" class="modal hidden" onclick="closeIdeaModal()">
+        <div class="modal-content idea-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeIdeaModal()">&times;</button>
+            <h3 class="idea-title">Give me an Idea!</h3>
+            <p class="idea-subtitle">Tell us what features, brawlers, or improvements you'd like to see!</p>
+            <textarea id="idea-text" class="idea-textarea" placeholder="Your idea..." maxlength="500"></textarea>
+            <div class="idea-actions">
+                <button class="btn-primary" onclick="submitIdea()">Submit</button>
+                <button class="btn-back-small" onclick="viewIdeas()">View all ideas (<span id="idea-count">0</span>)</button>
+            </div>
+            <div id="idea-list" class="idea-list hidden"></div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-login-modal" class="modal hidden" onclick="closeAdminLogin()">
+        <div class="modal-content idea-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAdminLogin()">&times;</button>
+            <h3 class="idea-title">Admin Login</h3>
+            <input type="password" id="admin-password" placeholder="Password..." class="search-input large" style="margin:1rem 0;">
+            <button class="btn-primary" onclick="adminLogin()">Login</button>
+            <p id="admin-login-error" class="hint" style="color:#e74c3c;display:none;margin-top:0.5rem;">Wrong password!</p>
+        </div>
+    </div>
+
+    <div class="bottom-btn-group">
+        <button id="admin-bottom-btn" class="bottom-btn admin-btn hidden" onclick="openAdminLogin()">Admin</button>
+        <button class="bottom-btn reload-btn" onclick="location.reload()">Reload</button>
+    </div>
+
+    <footer>
+        <p>BrawlHelper &mdash; Not affiliated with Supercell. Game data from <a href="https://brawlify.com" target="_blank">Brawlify</a>.</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/brawlers.js"></script>
+    <script src="js/gamemodes.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/guide.js"></script>
+    <script src="js/voices.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/clubs.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/music.js"></script>
+    <script src="js/creator.js"></script>
+    <script src="js/tierlist.js"></script>
+    <script src="js/mybrawlers.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start:*)",
+      "Bash(node:*)",
+      "Bash(ipconfig:*)",
+      "Bash(npx localtunnel:*)",
+      "Bash(npm install:*)",
+      "Bash(pm2 start:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(pm2:*)",
+      "Bash(where lt:*)",
+      "Bash(tasklist:*)",
+      "Bash(npx vercel:*)"
+    ]
+  }
+}
