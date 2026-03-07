@@ -1,9 +1,9 @@
 # BrawlHelper — Projektstatus
 
-**Senast uppdaterad:** 2026-03-04
-**Status:** Aktiv utveckling — intro-animation klar, förberedd för deployment
-**Git:** Ja — https://github.com/Jrosenlind/BrawlHelper (public, branch `master`, 2 commits)
-**Mapp:** `H:\Ai\Vidar`
+**Senast uppdaterad:** 2026-03-07
+**Status:** Aktiv utveckling — GitHub Pages (statisk), localhost:3000 (med server)
+**Git:** Ja — https://github.com/jonasrosenlind-coder/brawlhelper (public, branch `master`)
+**Mapp:** `G:\Ai\Vidar`
 
 ## Vad är detta?
 Webbapp som hjälper spelare att bli bättre på Brawl Stars. Brawler-guider med tips & strategi, spellägestips med aktiva kartor, spelstatistik, Brawl Stars Quiz (10 typer + Mega Mix med svårighetsgrader), Brawler Creator med AI-genererade bilder. Byggd för Vidar.
@@ -16,10 +16,10 @@ Webbapp som hjälper spelare att bli bättre på Brawl Stars. Brawler-guider med
 - **Med statistik/klubbar:** `cd H:\Ai\Vidar && node server.js` → http://localhost:3000
 - **Kräver:** Node.js (installerat), Brawl Stars API-nyckel (för statistik + klubbar)
 
-### Online (ej deployad ännu)
-- **GitHub repo:** https://github.com/Jrosenlind/BrawlHelper
-- **Vercel-setup:** `api/[...path].js` + `vercel.json` förberett — behöver Vercel-konto + login
-- **Alternativ:** GitHub Pages (statiska filer, Stats/Leaderboard/Clubs fungerar inte utan backend)
+### Online
+- **GitHub Pages (statisk):** https://jonasrosenlind-coder.github.io/brawlhelper/ (allt utom API-beroende funktioner)
+- **GitHub repo:** https://github.com/jonasrosenlind-coder/brawlhelper
+- **Vercel:** Ej konfigurerat (kräver telefonnummer vid registrering)
 
 ### Portar
 | Port | Tjänst |
@@ -89,6 +89,15 @@ H:\Ai\Vidar\
 | `/api/rankings/clubs?country=` | Klubbranking per land |
 | `/api/rankings/brawlers?brawlerId=&country=` | Brawler-ranking |
 | `/api/rankings/prestige?country=` | Prestige-ranking |
+| `/api/event` | GET — Hämta event-status + countdown-deadline |
+| `/api/event/start` | POST — Starta live event (admin) |
+| `/api/event/stop` | POST — Stoppa live event (admin) |
+| `/api/event/message` | POST — Skicka meddelande till live event (admin) |
+| `/api/event/nextinfo` | POST — Sätt/rensa countdown-deadline (admin) |
+| `/api/admin/login` | POST — Admin-inloggning |
+| `/api/ideas` | GET — Hämta alla idéer |
+| `/api/ideas/add` | POST — Lägg till idé |
+| `/api/ideas/delete` | POST — Radera idé (admin) |
 
 ## Vad är klart
 - [x] Responsiv layout med navigation (11 sidor)
@@ -117,19 +126,27 @@ H:\Ai\Vidar\
 - [x] **Vercel serverless API** — `api/[...path].js` förberedd för deployment
 - [x] **Intro-animation** — Fullscreen intro med bomb-explosion (gult/lila), R-T flyby, Larry & Lawrie med biljett, Spike-firande, snurrande fly-in
 - [x] **Idea Box** — "Share an Idea"-knapp (nere till vänster), modal med textarea, sparar idéer i localStorage, visa alla inskickade idéer. Engelsk text.
+- [x] **Mobilanpassning** — Responsiv CSS för alla sidor (nav, brawler-grid, quiz, clubs, stats, leaderboard). Bakgrunds-brawler dold på mobil.
+- [x] **Nätverkstillgänglighet** — Servern lyssnar på `0.0.0.0` (tillgänglig på lokalt nätverk)
+- [x] **GitHub Pages** — Statisk hosting via GitHub Pages
+- [x] **API-fix för deployment** — `stats.js` och `clubs.js` använder nu relativa paths (`/api/...`) istället för hårdkodad `localhost:3000`
+- [x] **Event-typ NEXT** — Ny admin-eventtyp (grön banner) för att meddela nästa uppdatering
+- [x] **Admin-system** — Idéhantering, live events (LIVE/UPDATE/NEXT) med meddelanden, admin-login via dubbelklick på loggan
+- [x] **Countdown-timer** — Admin sätter timmar/minuter till nästa event. Visas bredvid "No Active Event" i bannern som "Next event in X hours/minutes/Now!". Räknar ner automatiskt (steg: hours → 1 hour → 30 min → 10 min → Now!). Data sparas i `data/nextinfo.json`.
 
 ## Vad återstår
-- [ ] **Deploya online** — Vercel-login eller GitHub Pages (auth-problem vid Vercel CLI-login)
+- [ ] **Vercel-deployment** — Kräver telefonnummer (ej löst)
 - [ ] Fler quiz-frågor
 - [ ] Brawl TV-bakgrund (väntar på att Vidar spelar in `img/brawltv.mp4`)
 
 ## Kända begränsningar
 - YouTube är blockerat på datorn (Pi-hole) — YouTube-embeds fungerar inte
-- Statistik + klubbar kräver API-nyckel + Node.js-server (fungerar inte från file://)
+- Statistik + klubbar kräver API-nyckel + Node.js-server (fungerar inte från file:// eller GitHub Pages)
 - Brawlify events-endpoint returnerar ibland tom data (mellan rotationer)
 - Pollinations.ai kan ibland vara långsam eller nere — bildgenerering tar 5-15 sekunder
 - Brawler-bilder sparas som URL (ej base64) — kräver internet för att visa
 - Brawl Stars API-nyckel är IP-låst — vid deployment behövs ny nyckel med serverns IP
+- Vercel-deployment blockerad — kräver telefonnummer vid registrering
 - Inga tester
 
 ## Relaterade projekt

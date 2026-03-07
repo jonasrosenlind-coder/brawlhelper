@@ -95,6 +95,7 @@
                 <div class="live-event-header">
                     <span id="live-dot" class="live-dot hidden"></span>
                     <span id="live-label" class="live-label">No Active Event</span>
+                    <span id="live-next-info" class="live-next-info"></span>
                     <span id="live-event-title" class="live-event-title"></span>
                 </div>
                 <div id="live-event-message-single" class="live-event-msg hidden"></div>
@@ -559,10 +560,19 @@
                     <select id="admin-event-type" class="search-input" style="max-width:150px;">
                         <option value="live">LIVE</option>
                         <option value="update">UPDATE</option>
+                        <option value="next">NEXT</option>
                     </select>
                     <input type="text" id="admin-event-title" placeholder="Event title..." class="search-input" style="max-width:300px;">
                     <button class="btn-primary" onclick="adminStartEvent()">Start Event</button>
                     <button class="btn-danger" onclick="adminStopEvent()">Stop Event</button>
+                </div>
+                <div class="admin-event-controls" style="margin-top:0.5rem;">
+                    <label style="color:var(--text-secondary);font-size:0.85rem;">Countdown to next:</label>
+                    <input type="number" id="admin-countdown-hours" placeholder="Hours" class="search-input" style="max-width:80px;" min="0">
+                    <input type="number" id="admin-countdown-minutes" placeholder="Min" class="search-input" style="max-width:80px;" min="0" max="59">
+                    <button class="btn-primary" onclick="adminSetCountdown()">Start Countdown</button>
+                    <button class="btn-danger" onclick="adminClearCountdown()">Clear</button>
+                    <span id="admin-countdown-preview" style="color:var(--text-secondary);font-size:0.85rem;margin-left:0.5rem;"></span>
                 </div>
                 <div id="admin-event-composer" class="admin-event-composer hidden">
                     <textarea id="admin-event-msg" class="idea-textarea" placeholder="Write a message to show in the event..."></textarea>

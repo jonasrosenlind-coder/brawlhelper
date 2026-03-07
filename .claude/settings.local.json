@@ -12,7 +12,10 @@
       "Bash(pm2:*)",
       "Bash(where lt:*)",
       "Bash(tasklist:*)",
-      "Bash(npx vercel:*)"
+      "Bash(npx vercel:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(gh api:*)",
+      "Bash(curl:*)"
     ]
   }
 }

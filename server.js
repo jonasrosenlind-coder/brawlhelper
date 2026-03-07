@@ -33,6 +33,7 @@ const API_KEY = CONFIG.apiKey;
 // Data files
 const IDEAS_FILE = path.join(__dirname, 'data', 'ideas.json');
 const EVENT_FILE = path.join(__dirname, 'data', 'event.json');
+const NEXTINFO_FILE = path.join(__dirname, 'data', 'nextinfo.json');
 
 function ensureDataDir() {
     const dir = path.join(__dirname, 'data');
@@ -366,8 +367,23 @@ const server = http.createServer(async (req, res) => {
     // ===== EVENT API =====
     if (req.url === '/api/event' && req.method === 'GET') {
         const event = readJSON(EVENT_FILE, { active: false, messages: [] });
+        const nextinfo = readJSON(NEXTINFO_FILE, { deadline: null });
+        event.countdownDeadline = nextinfo.deadline || null;
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(event));
+        return;
+    }
+
+    if (req.url === '/api/event/nextinfo' && req.method === 'POST') {
+        const data = await readBody(req);
+        if (data.password !== CONFIG.adminPassword) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Fel lösenord' }));
+            return;
+        }
+        writeJSON(NEXTINFO_FILE, { deadline: data.deadline || null });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
         return;
     }
 
@@ -440,34 +456,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-    console.log('');
-    console.log('========================================');
-    console.log('  BrawlHelper Beta');
-    console.log('========================================');
-    console.log(`  Lokal: http://localhost:${PORT}`);
+    console.log(`BrawlHelper körs på http://localhost:${PORT}`);
     if (!API_KEY) {
-        console.log('\n  OBS: Ingen BRAWL_API_KEY satt.');
-    }
-
-    // Starta localtunnel => brawlhelper.loca.lt
-    try {
-        const localtunnel = require('localtunnel');
-        (async () => {
-            try {
-                const tunnel = await localtunnel({ port: PORT, subdomain: 'brawlhelper' });
-                console.log('');
-                console.log('  BETA LIVE:  ' + tunnel.url);
-                console.log('  Skriv denna URL på valfri enhet!');
-                console.log('');
-                tunnel.on('close', () => {
-                    console.log('  Tunnel stängd, startar om...');
-                    process.exit(1);
-                });
-            } catch (e) {
-                console.log('\n  Tunnel-fel:', e.message);
-            }
-        })();
-    } catch (e) {
-        console.log('\n  localtunnel saknas. Kör: npm install localtunnel');
+        console.log('OBS: Ingen BRAWL_API_KEY satt.');
     }
 });

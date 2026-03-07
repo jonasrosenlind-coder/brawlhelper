@@ -1,5 +1,65 @@
 # Sessionslogg — BrawlHelper (Vidar)
 
+## 2026-03-07 — Countdown-timer i bannern (session 9)
+
+**Vad gjordes:**
+- **Countdown-timer** — Ny funktion i admin-panelen och bannern:
+  - Admin: Två input-fält (timmar + minuter) + "Start Countdown" / "Clear"-knappar
+  - Sparar en deadline-timestamp till `data/nextinfo.json` via nytt API-endpoint `/api/event/nextinfo`
+  - Bannern visar texten bredvid "No Active Event", t.ex. "Next event in 3 hours"
+  - Nedräkningen ändras automatiskt i steg: X hours → 1 hour → 30 minutes → 10 minutes → Now!
+  - Uppdateras lokalt var 30:e sekund + via server-poll var 5:e sekund
+  - Försvinner inte förrän admin trycker "Clear"
+- **Ny server-endpoint** — `POST /api/event/nextinfo` (sparar/rensar deadline)
+- **Event API utökat** — `GET /api/event` returnerar nu även `countdownDeadline`
+
+**Beslut tagna:**
+- Countdown i steg (inte exakt tid) — enklare att läsa och mer Brawl Stars-känsla
+- Deadline sparas som ISO-timestamp på servern, klienten räknar ner lokalt
+
+**Problem/blockerare:**
+- Inga
+
+**Nästa session:**
+- Hitta extern hosting-lösning utan telefonnummer (för API-endpoints)
+- Fler quiz-frågor
+
+---
+
+## 2026-03-06 — Mobilanpassning, deployment, localtunnel-beta, NEXT-event (session 8)
+
+**Vad gjordes:**
+- **API-fix för deployment** — `stats.js` och `clubs.js` använde hårdkodad `localhost:3000`-check. Ändrade till relativa paths (`/api/...`) som fungerar både lokalt och deployat.
+- **Localtunnel-beta (BORTTAGEN)** — Localtunnel sattes upp men togs bort på förälderns begäran. Tunnlar och liknande lösningar som exponerar hemmadatorn mot internet är förbjudna.
+- **GitHub-konto skapat** — Nytt konto `jonasrosenlind-coder`, repo `brawlhelper` skapat och pushat.
+- **GitHub Pages aktiverat** — Statisk sida live på `jonasrosenlind-coder.github.io/brawlhelper/`
+- **Mobilanpassning (CSS)** — Ny `@media (max-width: 600px)` med ~250 rader:
+  - Header/nav: kolumn-layout, mindre knappar, wrappande navigation
+  - Brawler-grid: 90px min-width, mindre bilder och text
+  - Quiz: 2-kolumns grid, mindre kort
+  - Clubs/Stats/Leaderboard: staplad layout, anpassade tabeller
+  - Guide/Creator: kolumn-layout
+  - Bakgrunds-brawler (med pratbubbla) dold på mobil
+  - Live event-banner anpassad för mobil
+- **Event-typ NEXT** — Ny option i admin-dropdown. Grön banner med pulsande glow (`active-next` CSS-klass). Används för att meddela nästa uppdatering.
+- **Vercel-försök** — Flera försök att logga in via CLI och webb. Blockerat av krav på telefonnummer.
+
+**Beslut tagna:**
+- Localtunnel BORTTAGEN — föräldern förbjöd tunnlar och exponering av hemmadatorn. Säkerhetsregel: aldrig tunnlar, aldrig exponera nätverket. Extern publicering enbart via riktiga hosting-tjänster.
+- GitHub Pages som statisk hosting (quiz, brawlers etc fungerar utan server)
+- Vercel avbrutet tills vidare (telefonnummerkrav)
+- NEXT-event i grönt (skiljer sig från röd LIVE och blå UPDATE)
+
+**Problem/blockerare:**
+- Vercel kräver telefonnummer vid registrering — blockerar deployment av serverless functions
+- GitHub Pages kan inte köra API-endpoints (stats, clubs, leaderboard, live events fungerar inte där)
+
+**Nästa session:**
+- Hitta extern hosting-lösning utan telefonnummer (för API-endpoints)
+- Fler quiz-frågor
+
+---
+
 ## 2026-03-04 — Intro-animation med bomb, R-T, Larry & Lawrie, Spike (session 7)
 
 **Vad gjordes:**

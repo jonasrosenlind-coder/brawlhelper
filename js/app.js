@@ -1118,6 +1118,43 @@ async function adminStopEvent() {
     await checkLiveEvent();
 }
 
+async function adminSetCountdown() {
+    const hours = parseInt(document.getElementById('admin-countdown-hours').value) || 0;
+    const minutes = parseInt(document.getElementById('admin-countdown-minutes').value) || 0;
+    if (hours === 0 && minutes === 0) return;
+    const deadline = new Date(Date.now() + (hours * 60 + minutes) * 60000).toISOString();
+    await fetch('/api/event/nextinfo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, deadline })
+    });
+    checkLiveEvent();
+}
+
+async function adminClearCountdown() {
+    document.getElementById('admin-countdown-hours').value = '';
+    document.getElementById('admin-countdown-minutes').value = '';
+    await fetch('/api/event/nextinfo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, deadline: null })
+    });
+    checkLiveEvent();
+}
+
+function formatCountdown(deadline) {
+    const diff = new Date(deadline) - Date.now();
+    if (diff <= 0) return 'Now!';
+    const totalMin = Math.floor(diff / 60000);
+    const hours = Math.floor(totalMin / 60);
+    const mins = totalMin % 60;
+    if (hours >= 2) return 'Next event in ' + hours + ' hours';
+    if (hours === 1) return 'Next event in 1 hour';
+    if (totalMin >= 30) return 'Next event in 30 minutes';
+    if (totalMin >= 10) return 'Next event in 10 minutes';
+    return 'Next event Now!';
+}
+
 async function adminSendMessage() {
     const textarea = document.getElementById('admin-event-msg');
     const text = textarea.value.trim();
@@ -1134,6 +1171,7 @@ async function adminSendMessage() {
 
 // ===== LIVE EVENT POLLING =====
 let liveMessages = [];
+let countdownDeadline = null;
 let liveMessageIndex = 0;
 let liveMessageTimer = null;
 
@@ -1172,11 +1210,14 @@ async function checkLiveEvent() {
             dot.classList.remove('hidden');
             const type = (event.type || 'live').toUpperCase();
             label.textContent = type;
-            banner.classList.remove('active', 'active-update');
+            banner.classList.remove('active', 'active-update', 'active-next');
             banner.style.borderColor = '';
             if (type === 'LIVE') {
                 banner.classList.add('active');
                 dot.style.background = '#e74c3c';
+            } else if (type === 'NEXT') {
+                banner.classList.add('active-next');
+                dot.style.background = '#2ecc71';
             } else {
                 banner.classList.add('active-update');
                 dot.style.background = '#3498db';
@@ -1192,7 +1233,7 @@ async function checkLiveEvent() {
         } else {
             dot.classList.add('hidden');
             label.textContent = 'No Active Event';
-            banner.classList.remove('active', 'active-update');
+            banner.classList.remove('active', 'active-update', 'active-next');
             banner.style.borderColor = '';
             document.getElementById('live-event-title').textContent = '';
             liveMessages = [];
@@ -1201,9 +1242,32 @@ async function checkLiveEvent() {
             const msgEl = document.getElementById('live-event-message-single');
             if (msgEl) msgEl.classList.add('hidden');
         }
+        const nextInfoEl = document.getElementById('live-next-info');
+        if (nextInfoEl) {
+            if (event.countdownDeadline) {
+                countdownDeadline = event.countdownDeadline;
+                nextInfoEl.textContent = ' — ' + formatCountdown(countdownDeadline);
+            } else {
+                countdownDeadline = null;
+                nextInfoEl.textContent = '';
+            }
+        }
+        const preview = document.getElementById('admin-countdown-preview');
+        if (preview) {
+            preview.textContent = countdownDeadline ? 'Showing: ' + formatCountdown(countdownDeadline) : '';
+        }
     } catch (e) {}
 }
 
 // Poll every 5 seconds
 setInterval(checkLiveEvent, 5000);
 checkLiveEvent();
+
+// Update countdown locally every 30 seconds
+setInterval(() => {
+    if (!countdownDeadline) return;
+    const nextInfoEl = document.getElementById('live-next-info');
+    if (nextInfoEl) nextInfoEl.textContent = ' — ' + formatCountdown(countdownDeadline);
+    const preview = document.getElementById('admin-countdown-preview');
+    if (preview) preview.textContent = 'Showing: ' + formatCountdown(countdownDeadline);
+}, 30000);
